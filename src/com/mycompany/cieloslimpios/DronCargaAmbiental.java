@@ -34,6 +34,14 @@ public class DronCargaAmbiental extends Dron {
         return cargaActual;
     }
 
+    @Override
+    public void transmitirEstadoRed() {
+        super.transmitirEstadoRed();
+        System.out.printf(Locale.ROOT,
+                "[%s] Modelo: Carga ambiental | Carga: %.2f / %.2f kg.%n",
+                getCodigoSerie(), cargaActual, cargaMaxima);
+    }
+
     /** Retorna true si el objeto provocaría una sobrecarga; no modifica el dron. */
     public boolean evaluarPesoObjeto(double pesoNuevo) {
         if (!Double.isFinite(pesoNuevo) || pesoNuevo < 0) {

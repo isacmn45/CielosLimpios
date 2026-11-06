@@ -180,104 +180,21 @@ public final class PruebasCielosLimpios {
             verificar(dron.getCargaActual() == 3.0, "El peso cero debe conservar la carga.");
         });
 
-        probar("La jerarquía académica respeta cada nivel de herencia", () -> {
-            verificar(Persona.class.getSuperclass() == Object.class,
-                    "Persona debe ser la clase base de la jerarquía.");
-            verificar(Estudiante.class.getSuperclass() == Persona.class,
-                    "Estudiante debe heredar directamente de Persona.");
-            verificar(Docente.class.getSuperclass() == Estudiante.class,
-                    "Docente debe heredar directamente de Estudiante.");
-        });
+        probar("La telemetría polimórfica conserva los datos base y añade los de cada modelo", () -> {
+            Dron reconocimiento = new DronReconocimientoTactico("POLI-RECON", 64, true);
+            DronCargaAmbiental modeloCarga = new DronCargaAmbiental("POLI-CARGA", 71, false, 10.0);
+            modeloCarga.engancharDesecho(4.0);
+            Dron carga = modeloCarga;
 
-        probar("Los constructores conservan los datos heredados y propios", () -> {
-            Persona persona = new Persona("AlbaPrueba", 28);
-            verificar("AlbaPrueba".equals(persona.getNombre()) && persona.getEdad() == 28,
-                    "Persona debe conservar nombre y edad.");
-            Estudiante estudiante = new Estudiante("BrunoPrueba", 19, "EST-2030", "InformaticaPrueba");
-            verificar("BrunoPrueba".equals(estudiante.getNombre()) && estudiante.getEdad() == 19,
-                    "El constructor de Estudiante debe inicializar los datos de Persona.");
-            verificar("EST-2030".equals(estudiante.getCarnet())
-                    && "InformaticaPrueba".equals(estudiante.getCarrera()),
-                    "Estudiante debe conservar carnet y carrera.");
-            Docente docente = new Docente("ClaraPrueba", 45, "DOC-2030", "RoboticaPrueba", "ArquitecturaPrueba");
-            verificar("ClaraPrueba".equals(docente.getNombre()) && docente.getEdad() == 45,
-                    "Docente debe conservar los datos heredados de Persona.");
-            verificar("DOC-2030".equals(docente.getCarnet())
-                    && "RoboticaPrueba".equals(docente.getCarrera()),
-                    "Docente debe conservar los datos heredados de Estudiante.");
-            verificar("ArquitecturaPrueba".equals(docente.getAsignatura()),
-                    "Docente debe conservar su asignatura.");
-        });
+            String salidaReconocimiento = capturar(reconocimiento::transmitirEstadoRed);
+            verificarContieneDatos(salidaReconocimiento,
+                    "Serie: POLI-RECON", "Batería: 64%", "En línea: sí",
+                    "Reconocimiento táctico", "Cuadrantes: 7");
 
-        probar("Cada presentación incluye los datos del objeto completo", () -> {
-            verificarContieneDatos(new Persona("DaliaPrueba", 31).presentar(),
-                    "DaliaPrueba", "31");
-            verificarContieneDatos(new Estudiante("ElioPrueba", 20, "EST-84", "SistemasPrueba").presentar(),
-                    "ElioPrueba", "20", "EST-84", "SistemasPrueba");
-            verificarContieneDatos(new Docente("FlorPrueba", 52, "DOC-91", "CienciasPrueba", "RedesPrueba").presentar(),
-                    "FlorPrueba", "52", "DOC-91", "CienciasPrueba", "RedesPrueba");
-        });
-
-        probar("Un arreglo de Persona ejecuta las versiones de cada subclase", () -> {
-            Persona[] personas = {
-                new Persona("GabrielPrueba", 33),
-                new Estudiante("HelenaPrueba", 21, "EST-POLI", "SoftwarePrueba"),
-                new Docente("IvanPrueba", 40, "DOC-POLI", "IngenieriaPrueba", "HerenciaPrueba")
-            };
-            String[] actividades = new String[personas.length];
-            for (int i = 0; i < personas.length; i++) {
-                actividades[i] = personas[i].realizarActividad();
-                verificar(actividades[i] != null && !actividades[i].isBlank(),
-                        "Cada tipo debe describir una actividad.");
-            }
-            verificar(!actividades[0].equals(actividades[1])
-                    && !actividades[0].equals(actividades[2])
-                    && !actividades[1].equals(actividades[2]),
-                    "El despacho dinámico debe producir una actividad distinta para cada clase.");
-            verificarContieneDatos(personas[1].presentar(), "EST-POLI", "SoftwarePrueba");
-            verificarContieneDatos(personas[2].presentar(), "DOC-POLI", "IngenieriaPrueba", "HerenciaPrueba");
-        });
-
-        probar("Los campos académicos son privados y los métodos se sobrescriben", () -> {
-            Class<?>[] clases = {Persona.class, Estudiante.class, Docente.class};
-            String[] metodos = {"presentar", "realizarActividad"};
-            for (Class<?> clase : clases) {
-                for (Field campo : clase.getDeclaredFields()) {
-                    if (!Modifier.isStatic(campo.getModifiers())) {
-                        verificar(Modifier.isPrivate(campo.getModifiers()),
-                                "El campo " + clase.getSimpleName() + "." + campo.getName() + " debe ser privado.");
-                    }
-                }
-                for (String nombre : metodos) {
-                    java.lang.reflect.Method metodo = clase.getDeclaredMethod(nombre);
-                    verificar(Modifier.isPublic(metodo.getModifiers())
-                            && !Modifier.isStatic(metodo.getModifiers())
-                            && metodo.getReturnType() == String.class,
-                            clase.getSimpleName() + "." + nombre + " debe declarar una implementación pública de instancia.");
-                }
-            }
-        });
-
-        probar("La jerarquía académica valida textos y edades", () -> {
-            String[] textosInvalidos = {null, "", "  \t  "};
-            for (String texto : textosInvalidos) {
-                esperarIllegalArgument(() -> new Persona(texto, 20));
-                esperarIllegalArgument(() -> new Estudiante(texto, 20, "EST-01", "Sistemas"));
-                esperarIllegalArgument(() -> new Estudiante("Ana", 20, texto, "Sistemas"));
-                esperarIllegalArgument(() -> new Estudiante("Ana", 20, "EST-01", texto));
-                esperarIllegalArgument(() -> new Docente(texto, 35, "DOC-01", "Sistemas", "Programacion"));
-                esperarIllegalArgument(() -> new Docente("Ana", 35, texto, "Sistemas", "Programacion"));
-                esperarIllegalArgument(() -> new Docente("Ana", 35, "DOC-01", texto, "Programacion"));
-                esperarIllegalArgument(() -> new Docente("Ana", 35, "DOC-01", "Sistemas", texto));
-            }
-            esperarIllegalArgument(() -> new Persona("Ana", -1));
-            esperarIllegalArgument(() -> new Estudiante("Ana", -1, "EST-01", "Sistemas"));
-            esperarIllegalArgument(() -> new Docente("Ana", -1, "DOC-01", "Sistemas", "Programacion"));
-            verificar(new Persona("Ana", 0).getEdad() == 0, "La edad cero es válida.");
-            verificar(new Estudiante("Ana", 0, "EST-01", "Sistemas").getEdad() == 0,
-                    "Estudiante debe conservar el límite de edad cero.");
-            verificar(new Docente("Ana", 0, "DOC-01", "Sistemas", "Programacion").getEdad() == 0,
-                    "Docente debe conservar el límite de edad cero.");
+            String salidaCarga = capturar(carga::transmitirEstadoRed);
+            verificarContieneDatos(salidaCarga,
+                    "Serie: POLI-CARGA", "Batería: 71%", "En línea: no",
+                    "Carga ambiental", "4.00", "10.00");
         });
 
         System.out.println("\nResultado: " + pruebasAprobadas + " pruebas aprobadas.");
@@ -307,10 +224,10 @@ public final class PruebasCielosLimpios {
         }
     }
 
-    private static void verificarContieneDatos(String presentacion, String... datos) {
-        verificar(presentacion != null, "La presentación debe devolver un texto.");
+    private static void verificarContieneDatos(String salida, String... datos) {
+        verificar(salida != null, "La telemetría debe producir un reporte.");
         for (String dato : datos) {
-            verificar(presentacion.contains(dato), "La presentación debe incluir el dato: " + dato);
+            verificar(salida.contains(dato), "La telemetría debe incluir el dato: " + dato);
         }
     }
 

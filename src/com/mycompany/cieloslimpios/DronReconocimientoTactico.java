@@ -33,6 +33,13 @@ public class DronReconocimientoTactico extends Dron {
         return lecturasTermicas.clone();
     }
 
+    @Override
+    public void transmitirEstadoRed() {
+        super.transmitirEstadoRed();
+        System.out.printf("[%s] Modelo: Reconocimiento táctico | Cuadrantes: %d%n",
+                getCodigoSerie(), lecturasTermicas.length);
+    }
+
     public void generarMapeoEstocastico() {
         System.out.printf("%n[%s] Escaneando los siete cuadrantes:%n", getCodigoSerie());
         for (int i = 0; i < lecturasTermicas.length; i++) {
