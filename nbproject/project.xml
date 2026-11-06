@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
+            <name>Cielos Limpios</name>
+            <properties>
+                <property-file>nbproject/project.properties</property-file>
+            </properties>
+            <folders>
+                <source-folder>
+                    <label>Cielos Limpios</label>
+                    <location>.</location>
+                </source-folder>
+                <source-folder>
+                    <label>Código fuente</label>
+                    <type>java</type>
+                    <location>${src.dir}</location>
+                    <encoding>${source.encoding}</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>Pruebas</label>
+                    <type>java</type>
+                    <location>${test.src.dir}</location>
+                    <encoding>${source.encoding}</encoding>
+                </source-folder>
+                <build-folder>
+                    <location>${build.dir}</location>
+                </build-folder>
+                <build-folder>
+                    <location>${dist.dir}</location>
+                </build-folder>
+            </folders>
+            <ide-actions>
+                <action name="build">
+                    <target>jar</target>
+                </action>
+                <action name="clean">
+                    <target>clean</target>
+                </action>
+                <action name="rebuild">
+                    <target>clean</target>
+                    <target>jar</target>
+                </action>
+                <action name="run">
+                    <target>run</target>
+                </action>
+                <action name="test">
+                    <target>test</target>
+                </action>
+            </ide-actions>
+            <export>
+                <type>jar</type>
+                <location>${dist.jar}</location>
+                <build-target>jar</build-target>
+                <clean-target>clean</clean-target>
+            </export>
+            <view>
+                <items>
+                    <source-folder style="packages">
+                        <label>Código fuente</label>
+                        <location>${src.dir}</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>Pruebas</label>
+                        <location>${test.src.dir}</location>
+                    </source-folder>
+                    <source-file>
+                        <location>build.xml</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="build"/>
+                    <ide-action name="rebuild"/>
+                    <ide-action name="clean"/>
+                    <separator/>
+                    <ide-action name="run"/>
+                    <ide-action name="test"/>
+                </context-menu>
+            </view>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/5">
+            <compilation-unit>
+                <package-root>${src.dir}</package-root>
+                <classpath mode="execute">${build.classes.dir}</classpath>
+                <built-to>${build.classes.dir}</built-to>
+                <built-to>${dist.jar}</built-to>
+                <source-level>17</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>${test.src.dir}</package-root>
+                <unit-tests/>
+                <classpath mode="compile">${build.classes.dir}</classpath>
+                <classpath mode="execute">${build.classes.dir}:${build.test.classes.dir}</classpath>
+                <built-to>${build.test.classes.dir}</built-to>
+                <source-level>17</source-level>
+            </compilation-unit>
+        </java-data>
+    </configuration>
+</project>
