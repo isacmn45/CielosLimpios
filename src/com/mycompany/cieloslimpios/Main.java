@@ -15,10 +15,6 @@ import java.util.Random;
 public class Main {
 
     public static void main(String[] args) {
-        demostrarJerarquiaPersonas();
-        if (args.length > 0 && "--personas".equals(args[0])) {
-            return;
-        }
         Random random = new Random();
         System.out.println("=== OPERACIÓN CIELOS LIMPIOS | AÑO 2030 ===");
 
@@ -72,23 +68,4 @@ public class Main {
         System.out.println("\n=== SUPERVISIÓN FINALIZADA ===");
     }
 
-    private static void demostrarJerarquiaPersonas() {
-        System.out.println("=== PERSONA -> ESTUDIANTE -> DOCENTE ===");
-        System.out.println("Constructores encadenados con super y métodos sobreescritos.");
-
-        Persona[] personas = {
-            new Persona("Ana López", 30),
-            new Estudiante("Luis Pérez", 20, "EST-001", "Ingeniería en Sistemas"),
-            new Docente("María Díaz", 35, "DOC-001", "Maestría en Educación",
-                    "Programación Orientada a Objetos")
-        };
-
-        for (Persona persona : personas) {
-            System.out.println("\nTipo real: " + persona.getClass().getSimpleName());
-            System.out.println(persona.presentar());
-            System.out.println("Actividad: " + persona.realizarActividad());
-        }
-        System.out.println("\nSe invocaron las versiones del tipo real desde referencias Persona.");
-        System.out.println("=== FIN DE LA DEMOSTRACIÓN DE HERENCIA ===\n");
-    }
 }
